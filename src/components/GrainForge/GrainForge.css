@@ -303,3 +303,32 @@
   font-family: var(--gf-font);
   text-transform: uppercase;
 }
+
+@media (max-width: 425px) {
+  .gf-keyboard {
+    flex-wrap: nowrap;
+    gap: 0.25rem;
+  }
+
+  .gf-key {
+    width: 0;
+    flex: 1 1 0;
+    min-width: 0;
+    height: 72px;
+    padding-bottom: 0.5rem;
+    border-radius: 5px;
+    gap: 0.15rem;
+  }
+
+  .gf-key-note {
+    font-size: 0.6rem;
+  }
+
+  .gf-key-shortcut {
+    font-size: 0.48rem;
+  }
+
+  .gf-keyboard-section {
+    padding: 1rem 0.6rem;
+  }
+}

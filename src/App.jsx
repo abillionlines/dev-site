@@ -15,6 +15,15 @@ function HomePage() {
   const nextSectionRef = useRef(null);
   const [isPageAtTop, setIsPageAtTop] = useState(true);
   const [heroZoomDone, setHeroZoomDone] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(
+    () => window.innerWidth <= 425,
+  );
+
+  useEffect(() => {
+    const onResize = () => setIsMobileViewport(window.innerWidth <= 425);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   useEffect(() => {
     const syncTopState = () => {
@@ -33,9 +42,11 @@ function HomePage() {
     };
   }, []);
 
+  const heroZoomActive = !isMobileViewport && isPageAtTop && !heroZoomDone;
+
   // Lock body scroll while hero zoom is active
   useEffect(() => {
-    if (isPageAtTop && !heroZoomDone) {
+    if (heroZoomActive) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -43,7 +54,7 @@ function HomePage() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isPageAtTop, heroZoomDone]);
+  }, [heroZoomActive]);
 
   // Scroll to next section once zoom completes
   useEffect(() => {
@@ -63,7 +74,7 @@ function HomePage() {
     <main className="page-shell home-page">
       <Hero3D
         onFullyZoomedOut={handleHeroFullyZoomedOut}
-        isScrollEffectsEnabled={isPageAtTop && !heroZoomDone}
+        isScrollEffectsEnabled={heroZoomActive}
       />
       <section
         ref={nextSectionRef}
@@ -102,6 +113,7 @@ export default function App() {
   const [authError, setAuthError] = useState("");
   const [authNotice, setAuthNotice] = useState("");
   const [isAuthLoading, setIsAuthLoading] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!supabase) {
@@ -232,63 +244,92 @@ export default function App() {
   return (
     <div className={`app-shell${isHomeRoute ? " home-route" : ""}`}>
       <header className="top-nav">
-        <div className="top-nav-left">
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
-          >
-            Home
-          </NavLink>
-          {user ? (
+        <button
+          type="button"
+          className="hamburger-btn"
+          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={isMobileMenuOpen}
+        >
+          <span className="hamburger-bar" />
+          <span className="hamburger-bar" />
+          <span className="hamburger-bar" />
+        </button>
+        <div className={`nav-menu${isMobileMenuOpen ? " nav-menu-open" : ""}`}>
+          <div className="top-nav-left">
             <NavLink
-              to="/synth"
+              to="/"
+              end
               className={({ isActive }) =>
-                `nav-link synth-link-unlocked${isActive ? " active" : ""}`
+                `nav-link${isActive ? " active" : ""}`
               }
+              onClick={() => setIsMobileMenuOpen(false)}
             >
-              Synth
+              Home
             </NavLink>
-          ) : (
-            <button
-              type="button"
-              className="nav-link nav-link-button synth-link-locked"
-              onClick={openSynthGateModal}
+            {user ? (
+              <NavLink
+                to="/synth"
+                className={({ isActive }) =>
+                  `nav-link synth-link-unlocked${isActive ? " active" : ""}`
+                }
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Synth
+              </NavLink>
+            ) : (
+              <button
+                type="button"
+                className="nav-link nav-link-button synth-link-locked"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  openSynthGateModal();
+                }}
+              >
+                Synth
+              </button>
+            )}
+            <NavLink
+              to="/about-me"
+              className={({ isActive }) =>
+                `nav-link${isActive ? " active" : ""}`
+              }
+              onClick={() => setIsMobileMenuOpen(false)}
             >
-              Synth
-            </button>
-          )}
-          <NavLink
-            to="/about-me"
-            className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
-          >
-            About Me
-          </NavLink>
-        </div>
+              About Me
+            </NavLink>
+          </div>
 
-        <div className="top-nav-right">
-          {user ? (
-            <>
-              <span className="auth-user" title={user.email ?? "Signed in"}>
-                {user.email ?? "Signed in"}
-              </span>
+          <div className="top-nav-right">
+            {user ? (
+              <>
+                <span className="auth-user" title={user.email ?? "Signed in"}>
+                  {user.email ?? "Signed in"}
+                </span>
+                <button
+                  type="button"
+                  className="nav-link nav-link-button auth-action"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleSignOut();
+                  }}
+                >
+                  Log Out
+                </button>
+              </>
+            ) : (
               <button
                 type="button"
                 className="nav-link nav-link-button auth-action"
-                onClick={handleSignOut}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  openAuthModal("login");
+                }}
               >
-                Log Out
+                Log In / Sign Up
               </button>
-            </>
-          ) : (
-            <button
-              type="button"
-              className="nav-link nav-link-button auth-action"
-              onClick={() => openAuthModal("login")}
-            >
-              Log In / Sign Up
-            </button>
-          )}
+            )}
+          </div>
         </div>
       </header>
 

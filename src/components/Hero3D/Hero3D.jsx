@@ -136,39 +136,61 @@ export default function Hero3D({
           />
         </Suspense>
       </Canvas>
-      <div className="hero-text-block" aria-label="hero introduction text">
-        <p className="hero-name-label">Brian Wilkinson</p>
-        <p className="hero-left-label" aria-label="software engineer">
-          <span>software engineer</span>
-        </p>
-      </div>
-      <div className="hero-portrait-wrap" aria-hidden="true">
-        <img className="hero-portrait-image" src={brian1} alt="" />
+      <div className="hero-overlay-content">
+        <div className="hero-portrait-wrap" aria-hidden="true">
+          <img className="hero-portrait-image" src={brian1} alt="" />
+        </div>
+        <div className="hero-text-block" aria-label="hero introduction text">
+          <p className="hero-name-label">Brian Wilkinson</p>
+          <p className="hero-left-label" aria-label="software engineer">
+            <span>software engineer</span>
+          </p>
+        </div>
       </div>
       <div className="hero-social-icons" aria-label="Social icons">
-        <button
-          type="button"
+        <a
           className="hero-social-icon"
           aria-label="LinkedIn"
+          href="https://www.linkedin.com/in/brianwilkinsoninc/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           <FaLinkedinIn />
-        </button>
-        <button
-          type="button"
+        </a>
+        <a
           className="hero-social-icon"
           aria-label="Instagram"
+          href="https://www.instagram.com/brianwilkinsonmusic/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           <FaInstagram />
-        </button>
-        <button type="button" className="hero-social-icon" aria-label="GitHub">
+        </a>
+        <a
+          className="hero-social-icon"
+          aria-label="GitHub"
+          href="https://github.com/abillionlines"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <FaGithub />
-        </button>
-        <button type="button" className="hero-social-icon" aria-label="Email">
+        </a>
+        <a
+          className="hero-social-icon"
+          aria-label="Email"
+          href="mailto:brian@brianwilkinson.net"
+        >
           <MdEmail />
-        </button>
-        <button type="button" className="hero-social-icon" aria-label="IMDb">
+        </a>
+        <a
+          className="hero-social-icon"
+          aria-label="IMDb"
+          href="https://www.imdb.com/name/nm18333965/?ref_=fn_t_13"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <FaImdb />
-        </button>
+        </a>
       </div>
     </section>
   );
