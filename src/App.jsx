@@ -13,17 +13,38 @@ import { hasSupabaseConfig, supabase } from "./lib/supabaseClient";
 
 function HomePage() {
   const nextSectionRef = useRef(null);
+  const [isPageAtTop, setIsPageAtTop] = useState(true);
+
+  useEffect(() => {
+    const syncTopState = () => {
+      setIsPageAtTop(window.scrollY <= 1);
+    };
+
+    syncTopState();
+    window.addEventListener("scroll", syncTopState, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", syncTopState);
+    };
+  }, []);
 
   const handleHeroFullyZoomedOut = useCallback(() => {
+    if (!isPageAtTop) {
+      return;
+    }
+
     nextSectionRef.current?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
-  }, []);
+  }, [isPageAtTop]);
 
   return (
     <main className="page-shell home-page">
-      <Hero3D onFullyZoomedOut={handleHeroFullyZoomedOut} />
+      <Hero3D
+        onFullyZoomedOut={handleHeroFullyZoomedOut}
+        isScrollEffectsEnabled={isPageAtTop}
+      />
       <section
         ref={nextSectionRef}
         className="home-next-section"

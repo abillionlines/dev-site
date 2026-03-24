@@ -44,6 +44,10 @@
   letter-spacing: 0.03em;
 }
 
+.top-nav-left .nav-link {
+  font-size: 1.25rem;
+}
+
 .nav-link-button {
   border: 0;
   background: transparent;

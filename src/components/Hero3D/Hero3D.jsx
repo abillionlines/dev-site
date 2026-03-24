@@ -10,6 +10,7 @@ import { RoomModel } from "./RoomModel";
 
 const HERO_MIN_DISTANCE = 3;
 const HERO_MAX_DISTANCE = 14;
+const HERO_EFFECTIVE_MAX_DISTANCE = HERO_MAX_DISTANCE * 0.75;
 
 function HeroLightRig() {
   const rigRef = useRef(null);
@@ -59,26 +60,28 @@ function FloatingSphere({
   );
 }
 
-function HeroScene({ onFullyZoomedOut }) {
+function HeroScene({ onFullyZoomedOut, isScrollEffectsEnabled }) {
   const controlsRef = useRef(null);
   const zoomTargetRef = useRef(new Vector3());
   const hasTriggeredZoomOutRef = useRef(false);
 
   useFrame((state) => {
-    if (!controlsRef.current) return;
+    if (!controlsRef.current || !isScrollEffectsEnabled) {
+      return;
+    }
 
     controlsRef.current.getTarget(zoomTargetRef.current);
     const cameraDistance = state.camera.position.distanceTo(
       zoomTargetRef.current,
     );
-    const isAtMaxZoomOut = cameraDistance >= HERO_MAX_DISTANCE - 0.08;
+    const isAtMaxZoomOut = cameraDistance >= HERO_EFFECTIVE_MAX_DISTANCE - 0.08;
 
     if (isAtMaxZoomOut && !hasTriggeredZoomOutRef.current) {
       hasTriggeredZoomOutRef.current = true;
       onFullyZoomedOut?.();
     }
 
-    if (cameraDistance <= HERO_MAX_DISTANCE - 0.6) {
+    if (cameraDistance <= HERO_EFFECTIVE_MAX_DISTANCE - 0.6) {
       hasTriggeredZoomOutRef.current = false;
     }
   });
@@ -88,9 +91,10 @@ function HeroScene({ onFullyZoomedOut }) {
       <CameraControls
         ref={controlsRef}
         makeDefault
+        enabled={isScrollEffectsEnabled}
         maxPolarAngle={Math.PI / 2}
         minDistance={HERO_MIN_DISTANCE}
-        maxDistance={HERO_MAX_DISTANCE}
+        maxDistance={HERO_EFFECTIVE_MAX_DISTANCE}
       />
       <color attach="background" args={["#d7d7df"]} />
       <ambientLight intensity={0.65} />
@@ -104,7 +108,10 @@ function HeroScene({ onFullyZoomedOut }) {
   );
 }
 
-export default function Hero3D({ onFullyZoomedOut }) {
+export default function Hero3D({
+  onFullyZoomedOut,
+  isScrollEffectsEnabled = true,
+}) {
   return (
     <section className="hero-3d" aria-label="3D hero section">
       <Canvas
@@ -113,7 +120,10 @@ export default function Hero3D({ onFullyZoomedOut }) {
         dpr={[1, 1.75]}
       >
         <Suspense fallback={null}>
-          <HeroScene onFullyZoomedOut={onFullyZoomedOut} />
+          <HeroScene
+            onFullyZoomedOut={onFullyZoomedOut}
+            isScrollEffectsEnabled={isScrollEffectsEnabled}
+          />
         </Suspense>
       </Canvas>
       <div className="hero-text-block" aria-label="hero introduction text">
