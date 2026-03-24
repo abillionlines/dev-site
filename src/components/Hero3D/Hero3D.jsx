@@ -1,4 +1,4 @@
-import { Suspense, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { CameraControls, Float } from "@react-three/drei";
 import { FaGithub, FaImdb, FaInstagram, FaLinkedinIn } from "react-icons/fa";
@@ -63,7 +63,21 @@ function FloatingSphere({
 function HeroScene({ onFullyZoomedOut, isScrollEffectsEnabled }) {
   const controlsRef = useRef(null);
   const zoomTargetRef = useRef(new Vector3());
-  const hasTriggeredZoomOutRef = useRef(false);
+  const hasTriggeredZoomOutRef = useRef(true);
+  const prevEnabledRef = useRef(isScrollEffectsEnabled);
+
+  // Reset camera when scroll effects re-engage (user scrolled back to top)
+  useEffect(() => {
+    if (
+      isScrollEffectsEnabled &&
+      !prevEnabledRef.current &&
+      controlsRef.current
+    ) {
+      hasTriggeredZoomOutRef.current = true;
+      controlsRef.current.reset(true);
+    }
+    prevEnabledRef.current = isScrollEffectsEnabled;
+  }, [isScrollEffectsEnabled]);
 
   useFrame((state) => {
     if (!controlsRef.current || !isScrollEffectsEnabled) {
@@ -114,11 +128,7 @@ export default function Hero3D({
 }) {
   return (
     <section className="hero-3d" aria-label="3D hero section">
-      <Canvas
-        shadows
-        camera={{ position: [5, 2, 10], fov: 50 }}
-        dpr={[1, 1.75]}
-      >
+      <Canvas shadows camera={{ position: [3, 2, 6], fov: 50 }} dpr={[1, 1.75]}>
         <Suspense fallback={null}>
           <HeroScene
             onFullyZoomedOut={onFullyZoomedOut}

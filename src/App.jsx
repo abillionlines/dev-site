@@ -14,10 +14,15 @@ import { hasSupabaseConfig, supabase } from "./lib/supabaseClient";
 function HomePage() {
   const nextSectionRef = useRef(null);
   const [isPageAtTop, setIsPageAtTop] = useState(true);
+  const [heroZoomDone, setHeroZoomDone] = useState(false);
 
   useEffect(() => {
     const syncTopState = () => {
-      setIsPageAtTop(window.scrollY <= 1);
+      const atTop = window.scrollY <= 1;
+      setIsPageAtTop(atTop);
+      if (atTop) {
+        setHeroZoomDone(false);
+      }
     };
 
     syncTopState();
@@ -28,22 +33,37 @@ function HomePage() {
     };
   }, []);
 
-  const handleHeroFullyZoomedOut = useCallback(() => {
-    if (!isPageAtTop) {
-      return;
+  // Lock body scroll while hero zoom is active
+  useEffect(() => {
+    if (isPageAtTop && !heroZoomDone) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isPageAtTop, heroZoomDone]);
 
-    nextSectionRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }, [isPageAtTop]);
+  // Scroll to next section once zoom completes
+  useEffect(() => {
+    if (heroZoomDone) {
+      nextSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [heroZoomDone]);
+
+  const handleHeroFullyZoomedOut = useCallback(() => {
+    setHeroZoomDone(true);
+  }, []);
 
   return (
     <main className="page-shell home-page">
       <Hero3D
         onFullyZoomedOut={handleHeroFullyZoomedOut}
-        isScrollEffectsEnabled={isPageAtTop}
+        isScrollEffectsEnabled={isPageAtTop && !heroZoomDone}
       />
       <section
         ref={nextSectionRef}
