@@ -304,7 +304,7 @@
   text-transform: uppercase;
 }
 
-@media (max-width: 425px) {
+@media (max-width: 670px) {
   .gf-keyboard {
     flex-wrap: nowrap;
     gap: 0.25rem;

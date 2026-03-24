@@ -489,7 +489,7 @@
   color: #f0f4ff;
 }
 
-@media (max-width: 425px) {
+@media (max-width: 670px) {
   /* ── Hamburger nav ─────────────────────────── */
   .hamburger-btn {
     display: flex;

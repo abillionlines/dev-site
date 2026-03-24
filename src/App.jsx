@@ -16,11 +16,11 @@ function HomePage() {
   const [isPageAtTop, setIsPageAtTop] = useState(true);
   const [heroZoomDone, setHeroZoomDone] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(
-    () => window.innerWidth <= 425,
+    () => window.innerWidth <= 670,
   );
 
   useEffect(() => {
-    const onResize = () => setIsMobileViewport(window.innerWidth <= 425);
+    const onResize = () => setIsMobileViewport(window.innerWidth <= 670);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
