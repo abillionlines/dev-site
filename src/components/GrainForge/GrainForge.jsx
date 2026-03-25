@@ -119,25 +119,24 @@ export default function GrainForge() {
   ]);
 
   // ── Boot audio context ───────────────────────────────────────────
+  const ensureRunning = useCallback((ctx) => {
+    // iOS requires a silent buffer + resume on every unlock attempt
+    const buf = ctx.createBuffer(1, 1, ctx.sampleRate);
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    src.start();
+    if (ctx.state !== "running") ctx.resume();
+  }, []);
+
   const bootAudio = useCallback(() => {
     if (audioCtxRef.current) {
-      if (audioCtxRef.current.state === "suspended") {
-        audioCtxRef.current.resume();
-      }
+      ensureRunning(audioCtxRef.current);
       return;
     }
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     audioCtxRef.current = ctx;
-
-    // iOS audio unlock: play a silent buffer during the user gesture
-    // so the AudioContext is fully unlocked for future oscillator starts
-    const unlock = ctx.createBuffer(1, 1, ctx.sampleRate);
-    const unlockSrc = ctx.createBufferSource();
-    unlockSrc.buffer = unlock;
-    unlockSrc.connect(ctx.destination);
-    unlockSrc.start();
-
-    if (ctx.state === "suspended") ctx.resume();
+    ensureRunning(ctx);
 
     const master = ctx.createGain();
     master.gain.value = 0.7;
@@ -172,12 +171,14 @@ export default function GrainForge() {
     analyser.connect(ctx.destination);
 
     setStarted(true);
-  }, []);
+  }, [ensureRunning]);
 
   // ── Spawn a single grain ─────────────────────────────────────────
   const spawnGrain = useCallback((baseFreq) => {
     const ctx = audioCtxRef.current;
     if (!ctx) return;
+    // Re-resume if iOS suspended the context between interactions
+    if (ctx.state !== "running") ctx.resume();
     const { grainSize, pitch, spray, waveform } = paramsRef.current;
     const now = ctx.currentTime;
 
