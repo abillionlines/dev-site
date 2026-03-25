@@ -11,6 +11,8 @@ import { RoomModel } from "./RoomModel";
 const HERO_MIN_DISTANCE = 3;
 const HERO_MAX_DISTANCE = 14;
 const HERO_EFFECTIVE_MAX_DISTANCE = HERO_MAX_DISTANCE * 0.75;
+const INITIAL_CAM_DIR = new Vector3(3, 2, 6).normalize();
+const INITIAL_CAM_DIST = new Vector3(3, 2, 6).length();
 
 function HeroLightRig() {
   const rigRef = useRef(null);
@@ -60,7 +62,7 @@ function FloatingSphere({
   );
 }
 
-function HeroScene({ onFullyZoomedOut, isScrollEffectsEnabled }) {
+function HeroScene({ onFullyZoomedOut, isScrollEffectsEnabled, isMobile }) {
   const controlsRef = useRef(null);
   const zoomTargetRef = useRef(new Vector3());
   const hasTriggeredZoomOutRef = useRef(true);
@@ -80,6 +82,19 @@ function HeroScene({ onFullyZoomedOut, isScrollEffectsEnabled }) {
   }, [isScrollEffectsEnabled]);
 
   useFrame((state) => {
+    // Mobile: drive camera zoom from page scroll
+    if (isMobile) {
+      const t = Math.min(
+        Math.max(window.scrollY / (window.innerHeight * 0.6), 0),
+        1,
+      );
+      const dist =
+        INITIAL_CAM_DIST + t * (HERO_EFFECTIVE_MAX_DISTANCE - INITIAL_CAM_DIST);
+      state.camera.position.copy(INITIAL_CAM_DIR).multiplyScalar(dist);
+      state.camera.lookAt(0, 0, 0);
+      return;
+    }
+
     if (!controlsRef.current || !isScrollEffectsEnabled) {
       return;
     }
@@ -102,14 +117,16 @@ function HeroScene({ onFullyZoomedOut, isScrollEffectsEnabled }) {
 
   return (
     <>
-      <CameraControls
-        ref={controlsRef}
-        makeDefault
-        enabled={isScrollEffectsEnabled}
-        maxPolarAngle={Math.PI / 2}
-        minDistance={HERO_MIN_DISTANCE}
-        maxDistance={HERO_EFFECTIVE_MAX_DISTANCE}
-      />
+      {!isMobile && (
+        <CameraControls
+          ref={controlsRef}
+          makeDefault
+          enabled={isScrollEffectsEnabled}
+          maxPolarAngle={Math.PI / 2}
+          minDistance={HERO_MIN_DISTANCE}
+          maxDistance={HERO_EFFECTIVE_MAX_DISTANCE}
+        />
+      )}
       <color attach="background" args={["#d7d7df"]} />
       <ambientLight intensity={0.65} />
       <hemisphereLight intensity={0.6} groundColor="#b9bdc8" color="#ffffff" />
@@ -125,14 +142,21 @@ function HeroScene({ onFullyZoomedOut, isScrollEffectsEnabled }) {
 export default function Hero3D({
   onFullyZoomedOut,
   isScrollEffectsEnabled = true,
+  isMobile = false,
 }) {
   return (
     <section className="hero-3d" aria-label="3D hero section">
-      <Canvas shadows camera={{ position: [3, 2, 6], fov: 50 }} dpr={[1, 1.75]}>
+      <Canvas
+        shadows
+        camera={{ position: [3, 2, 6], fov: 50 }}
+        dpr={[1, 1.75]}
+        style={isMobile ? { touchAction: "pan-y" } : undefined}
+      >
         <Suspense fallback={null}>
           <HeroScene
             onFullyZoomedOut={onFullyZoomedOut}
             isScrollEffectsEnabled={isScrollEffectsEnabled}
+            isMobile={isMobile}
           />
         </Suspense>
       </Canvas>

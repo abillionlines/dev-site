@@ -120,8 +120,14 @@ export default function GrainForge() {
 
   // ── Boot audio context ───────────────────────────────────────────
   const bootAudio = useCallback(() => {
-    if (audioCtxRef.current) return;
+    if (audioCtxRef.current) {
+      if (audioCtxRef.current.state === "suspended") {
+        audioCtxRef.current.resume();
+      }
+      return;
+    }
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
     audioCtxRef.current = ctx;
 
     const master = ctx.createGain();
