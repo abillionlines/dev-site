@@ -76,6 +76,7 @@ export default function GrainForge() {
 
   const [started, setStarted] = useState(false);
   const [activeKeys, setActiveKeys] = useState(new Set());
+  const [isMobile] = useState(() => window.innerWidth <= 670);
 
   const [grainSize, setGrainSize] = useState(0.12);
   const [density, setDensity] = useState(8);
@@ -362,7 +363,7 @@ export default function GrainForge() {
           height={160}
           className="gf-scope-canvas"
         />
-        {!started && (
+        {!started && !isMobile && (
           <div className="gf-scope-overlay">
             <button className="gf-start-btn" onClick={bootAudio}>
               ▶&nbsp;&nbsp;INITIALIZE ENGINE
