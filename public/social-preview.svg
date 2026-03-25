@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">WingShot Dev social preview</title>
+  <desc id="desc">A branded social card for WingShot Dev with a paper plane icon and site title.</desc>
+  <defs>
+    <linearGradient id="bg" x1="80" y1="40" x2="1120" y2="590" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#eff6ff" />
+      <stop offset="0.52" stop-color="#dbeafe" />
+      <stop offset="1" stop-color="#bfdbfe" />
+    </linearGradient>
+    <linearGradient id="panel" x1="180" y1="120" x2="980" y2="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.96" />
+      <stop offset="1" stop-color="#eff6ff" stop-opacity="0.88" />
+    </linearGradient>
+    <linearGradient id="plane" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a" />
+      <stop offset="1" stop-color="#334155" />
+    </linearGradient>
+    <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#0f172a" flood-opacity="0.18" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="1020" cy="120" r="190" fill="#ffffff" fill-opacity="0.35" />
+  <circle cx="180" cy="560" r="210" fill="#93c5fd" fill-opacity="0.22" />
+  <path d="M0 500C160 450 260 430 400 460C560 494 688 598 862 584C1002 572 1098 500 1200 456V630H0Z" fill="#0f172a" fill-opacity="0.07" />
+
+  <g filter="url(#soft-shadow)">
+    <rect x="92" y="78" width="1016" height="474" rx="34" fill="url(#panel)" />
+  </g>
+
+  <g transform="translate(140 152)">
+    <rect x="0" y="0" width="130" height="130" rx="28" fill="#e0f2fe" />
+    <path fill="url(#plane)" d="M103.8 19.3a5.6 5.6 0 0 0-5.9-1.1L23 47.7a5.6 5.6 0 0 0 .4 10.4l29.2 10 10 29.2a5.6 5.6 0 0 0 10.4.4l29.5-74.9a5.6 5.6 0 0 0-1.7-3.5Zm-34.2 47.4-8.1 20.9-6.5-19a5.6 5.6 0 0 0-3.5-3.5l-18.9-6.5 59.1-22.9-20.9 8.2a5.6 5.6 0 0 0-3.5 3.4l-3.3 10.8 5.1 5.1Z" />
+  </g>
+
+  <text x="304" y="220" fill="#0f172a" font-family="Lexend, Avenir Next, Segoe UI, sans-serif" font-size="76" font-weight="700" letter-spacing="-1.8">
+    WingShot Dev
+  </text>
+  <text x="304" y="292" fill="#334155" font-family="Lexend, Avenir Next, Segoe UI, sans-serif" font-size="30" font-weight="500">
+    Interactive portfolio, frontend engineering, and 3D UI work.
+  </text>
+
+  <g transform="translate(304 350)">
+    <rect x="0" y="0" width="246" height="56" rx="28" fill="#0f172a" />
+    <text x="123" y="36" text-anchor="middle" fill="#f8fafc" font-family="Lexend, Avenir Next, Segoe UI, sans-serif" font-size="24" font-weight="600">
+      wingshotdev.com
+    </text>
+  </g>
+
+  <text x="304" y="456" fill="#475569" font-family="Lexend, Avenir Next, Segoe UI, sans-serif" font-size="26" font-weight="500">
+    Featuring the GrainForge synth experience.
+  </text>
+</svg>

@@ -348,6 +348,13 @@
 }
 
 @media (max-width: 670px) {
+  .gf-start-btn {
+    white-space: nowrap;
+    font-size: clamp(0.62rem, 3.2vw, 1rem);
+    letter-spacing: 0.12em;
+    padding: 0.65em 1.2em;
+  }
+
   .gf-keyboard {
     flex-wrap: nowrap;
     gap: 0.25rem;
