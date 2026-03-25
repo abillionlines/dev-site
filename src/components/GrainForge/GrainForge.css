@@ -112,6 +112,43 @@
   border-color: var(--gf-accent);
 }
 
+/* ── Mobile init modal ─────────────────────────────────────────── */
+.gf-mobile-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+}
+.gf-mobile-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  background: var(--gf-surface);
+  border: 1px solid var(--gf-border);
+  border-radius: 14px;
+  padding: 2.4rem 2rem;
+  margin: 0 1.2rem;
+  box-shadow: 0 0 40px rgba(124, 58, 237, 0.25);
+  text-align: center;
+}
+.gf-mobile-modal-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  font-family: var(--gf-font);
+}
+.gf-mobile-modal-text {
+  color: var(--gf-text-dim);
+  font-size: 0.85rem;
+  font-family: var(--gf-font);
+}
+
 /* ── Controls grid ──────────────────────────────────────────────── */
 .gf-controls-grid {
   display: grid;

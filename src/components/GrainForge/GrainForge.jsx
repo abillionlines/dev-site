@@ -370,6 +370,24 @@ export default function GrainForge() {
         <p className="gf-subtitle">Web Granular Synthesizer · Web Audio API</p>
       </header>
 
+      {/* Mobile init modal */}
+      {!started && isMobile && (
+        <div className="gf-mobile-modal-backdrop" onClick={bootAudio}>
+          <div className="gf-mobile-modal" onClick={(e) => e.stopPropagation()}>
+            <h2 className="gf-mobile-modal-title">
+              <span className="gf-grain">GRAIN</span>
+              <span className="gf-forge">FORGE</span>
+            </h2>
+            <p className="gf-mobile-modal-text">
+              Tap below to start the audio engine
+            </p>
+            <button className="gf-start-btn" onClick={bootAudio}>
+              ▶&nbsp;&nbsp;INITIALIZE ENGINE
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Oscilloscope */}
       <div className="gf-scope-container">
         <canvas
