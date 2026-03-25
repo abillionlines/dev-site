@@ -175,13 +175,11 @@ export default function GrainForge() {
   }, [ensureRunning]);
 
   // ── Spawn a single grain ─────────────────────────────────────────
-  const spawnGrain = useCallback((baseFreq) => {
+  const spawnGrain = useCallback((baseFreq, startTime) => {
     const ctx = audioCtxRef.current;
     if (!ctx) return;
-    // Re-resume if iOS suspended the context between interactions
-    if (ctx.state !== "running") ctx.resume();
     const { grainSize, pitch, spray, waveform } = paramsRef.current;
-    const now = ctx.currentTime;
+    const now = startTime ?? ctx.currentTime;
 
     const detune = pitch * 100 + (Math.random() - 0.5) * spray * 1200;
     const freq = baseFreq * Math.pow(2, detune / 1200);
@@ -218,15 +216,32 @@ export default function GrainForge() {
   }, []);
 
   // ── Grain loop ───────────────────────────────────────────────────
+  // Pre-schedule a burst of grains from the current time so iOS
+  // doesn't need to wake up from setTimeout to produce audio.
+  const scheduleGrainBurst = useCallback(() => {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+    const { density } = paramsRef.current;
+    const interval = 1 / density;
+    const burstDuration = 0.25; // schedule 250ms worth of grains ahead
+    let t = ctx.currentTime;
+    const end = t + burstDuration;
+    while (t < end) {
+      activeNotesRef.current.forEach((freq) => spawnGrain(freq, t));
+      t += interval;
+    }
+  }, [spawnGrain]);
+
   const startGrainLoop = useCallback(() => {
     if (grainIntervalRef.current) return;
+    scheduleGrainBurst(); // Immediately schedule first burst in user gesture
     const tick = () => {
       const { density } = paramsRef.current;
-      activeNotesRef.current.forEach((freq) => spawnGrain(freq));
-      grainIntervalRef.current = setTimeout(tick, 1000 / density);
+      scheduleGrainBurst();
+      grainIntervalRef.current = setTimeout(tick, 200);
     };
-    tick();
-  }, [spawnGrain]);
+    grainIntervalRef.current = setTimeout(tick, 200);
+  }, [scheduleGrainBurst]);
 
   const stopGrainLoop = useCallback(() => {
     if (grainIntervalRef.current) {
