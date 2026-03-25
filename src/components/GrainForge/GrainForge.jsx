@@ -127,8 +127,17 @@ export default function GrainForge() {
       return;
     }
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if (ctx.state === "suspended") ctx.resume();
     audioCtxRef.current = ctx;
+
+    // iOS audio unlock: play a silent buffer during the user gesture
+    // so the AudioContext is fully unlocked for future oscillator starts
+    const unlock = ctx.createBuffer(1, 1, ctx.sampleRate);
+    const unlockSrc = ctx.createBufferSource();
+    unlockSrc.buffer = unlock;
+    unlockSrc.connect(ctx.destination);
+    unlockSrc.start();
+
+    if (ctx.state === "suspended") ctx.resume();
 
     const master = ctx.createGain();
     master.gain.value = 0.7;
