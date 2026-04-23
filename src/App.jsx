@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Navigate,
   NavLink,
   Route,
   Routes,
@@ -608,28 +607,15 @@ export default function App() {
             >
               Home
             </NavLink>
-            {user ? (
-              <NavLink
-                to="/synth"
-                className={({ isActive }) =>
-                  `nav-link synth-link-unlocked${isActive ? " active" : ""}`
-                }
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Synth
-              </NavLink>
-            ) : (
-              <button
-                type="button"
-                className="nav-link nav-link-button synth-link-locked"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  openSynthGateModal();
-                }}
-              >
-                Synth
-              </button>
-            )}
+            <NavLink
+              to="/synth"
+              className={({ isActive }) =>
+                `nav-link synth-link-unlocked${isActive ? " active" : ""}`
+              }
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Synth
+            </NavLink>
             <NavLink
               to="/about-me"
               className={({ isActive }) =>
@@ -685,10 +671,7 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route
-          path="/synth"
-          element={user ? <SynthPage /> : <Navigate to="/" replace />}
-        />
+        <Route path="/synth" element={<SynthPage />} />
         <Route path="/about-me" element={<AboutMePage />} />
         <Route path="/contact" element={<ContactPage />} />
       </Routes>
@@ -810,24 +793,14 @@ export default function App() {
           >
             Home
           </NavLink>
-          {user ? (
-            <NavLink
-              to="/synth"
-              className={({ isActive }) =>
-                `nav-link synth-link-unlocked${isActive ? " active" : ""}`
-              }
-            >
-              Synth
-            </NavLink>
-          ) : (
-            <button
-              type="button"
-              className="nav-link nav-link-button synth-link-locked"
-              onClick={openSynthGateModal}
-            >
-              Synth
-            </button>
-          )}
+          <NavLink
+            to="/synth"
+            className={({ isActive }) =>
+              `nav-link synth-link-unlocked${isActive ? " active" : ""}`
+            }
+          >
+            Synth
+          </NavLink>
           <NavLink
             to="/about-me"
             className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
